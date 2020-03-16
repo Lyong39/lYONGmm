@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <router-link to="/">我是router-link</router-link>
-  </div>
+    <div class="app">
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
 
-export default {
-  name: 'App'
-}
+    export default {
+        name: 'App'
+    }
 </script>
 
 <style>
-
+    @import "style/index.css";
 </style>
