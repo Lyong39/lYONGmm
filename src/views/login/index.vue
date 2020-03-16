@@ -43,16 +43,20 @@
                     <el-button class="loginbtn" type="primary" @click="onSubmit">登录</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="loginbtn" type="primary">注册</el-button>
+                    <el-button class="loginbtn" type="primary" @click="openregister">注册</el-button>
                 </el-form-item>
             </el-form>
 
         </div>
         <img class="rightimg" src="../../assets/login_banner_ele.png" alt="">
+        <register ref="register"/>
     </div>
 </template>
 
 <script>
+
+    import register from "./components/register";
+
     export default {
         name: "index",
         data() {
@@ -83,15 +87,21 @@
                 this.$refs.form.validate((valid) => {
                     if (valid) {
                         this.$message({
-                            message: '恭喜你，这是一条成功消息',
+                            message: '恭喜你，登录成功！',
                             type: 'success'
                         });
                     } else {
-                        this.$message.error('错了哦，这是一条错误消息');
+                        this.$message.error('登录失败！请检查账户输入...');
                         return false;
                     }
                 });
+            },
+            openregister() {
+                this.$refs.register.dialogFormVisible = true;
             }
+        },
+        components: {
+            register
         }
     }
 </script>
