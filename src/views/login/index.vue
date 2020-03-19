@@ -27,7 +27,7 @@
                                       v-model="form.loginCode"></el-input>
                         </el-col>
                         <el-col :span="8">
-                            <img class="loginCode" src="../../assets/login_captcha.png" alt="">
+                            <img class="loginCode" @click="changeImg" :src='imgUrl' alt="">
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -56,6 +56,9 @@
 <script>
 
     import register from "./components/register";
+    import {checkphone} from "@/utils/myCheck";
+    import {apiLogin} from "@/api/login";
+
 
     export default {
         name: "index",
@@ -68,6 +71,10 @@
                     isCheck: []
                 },
                 rules: {
+                    phone: [
+                        {required: true, message: '手机号不能为空', trigger: 'blur'},
+                        {validator: checkphone, trigger: 'blur'}
+                    ],
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
                         {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
@@ -79,22 +86,33 @@
                     isCheck: [
                         {required: true, message: '请阅读用户协议和隐私条款', trigger: 'change'}
                     ]
-                }
+                },
+                imgUrl: process.env.VUE_APP_ONLINEURL + '/captcha?type=login&t=' + Date.now()
             }
         },
         methods: {
             onSubmit() {
                 this.$refs.form.validate((valid) => {
                     if (valid) {
-                        this.$message({
-                            message: '恭喜你，登录成功！',
-                            type: 'success'
+                        apiLogin({
+                            phone: this.form.phone,
+                            password: this.form.password,
+                            code: this.form.loginCode
+                        }).then(res => {
+                            console.log(res);
+                            this.$message({
+                                message: '恭喜你，登录成功！',
+                                type: 'success'
+                            });
                         });
                     } else {
                         this.$message.error('登录失败！请检查账户输入...');
                         return false;
                     }
                 });
+            },
+            changeImg() {
+                this.imgUrl = process.env.VUE_APP_ONLINEURL + '/captcha?type=sendsms&t=' + Date.now();
             },
             openregister() {
                 this.$refs.register.dialogFormVisible = true;
