@@ -58,6 +58,7 @@
     import register from "./components/register";
     import {checkphone} from "@/utils/myCheck";
     import {apiLogin} from "@/api/login";
+    import {setToken} from "../../utils/myToken";
 
 
     export default {
@@ -77,7 +78,7 @@
                     ],
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+                        {min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur'}
                     ],
                     loginCode: [
                         {required: true, message: '请输入验证码', trigger: 'blur'},
@@ -87,7 +88,7 @@
                         {required: true, message: '请阅读用户协议和隐私条款', trigger: 'change'}
                     ]
                 },
-                imgUrl: process.env.VUE_APP_ONLINEURL + '/captcha?type=login&t=' + Date.now()
+                imgUrl: process.env.VUE_APP_URL + '/captcha?type=login&t=' + Date.now()
             }
         },
         methods: {
@@ -99,7 +100,9 @@
                             password: this.form.password,
                             code: this.form.loginCode
                         }).then(res => {
-                            console.log(res);
+                            window.console.log(res);
+                            this.$router.push({path: '/index'});
+                            setToken(res.data.data.token);
                             this.$message({
                                 message: '恭喜你，登录成功！',
                                 type: 'success'
@@ -107,12 +110,11 @@
                         });
                     } else {
                         this.$message.error('登录失败！请检查账户输入...');
-                        return false;
                     }
                 });
             },
             changeImg() {
-                this.imgUrl = process.env.VUE_APP_ONLINEURL + '/captcha?type=sendsms&t=' + Date.now();
+                this.imgUrl = process.env.VUE_APP_URL + '/captcha?type=login&t=' + Date.now();
             },
             openregister() {
                 this.$refs.register.dialogFormVisible = true;
