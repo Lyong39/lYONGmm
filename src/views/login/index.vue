@@ -32,12 +32,14 @@
                     </el-row>
                 </el-form-item>
                 <el-form-item prop="isCheck">
-                    <el-checkbox v-model="form.isCheck">
-                        我已阅读并同意
-                        <el-link type="primary">用户协议</el-link>
-                        和
-                        <el-link type="primary">隐私条款</el-link>
-                    </el-checkbox>
+                    <el-checkbox-group v-model="form.isCheck">
+                        <el-checkbox label="check">
+                            我已阅读并同意
+                            <el-link type="primary">用户协议</el-link>
+                            和
+                            <el-link type="primary">隐私条款</el-link>
+                        </el-checkbox>
+                    </el-checkbox-group>
                 </el-form-item>
                 <el-form-item>
                     <el-button class="loginbtn" type="primary" @click="onSubmit">登录</el-button>
@@ -69,7 +71,7 @@
                     phone: '',
                     password: '',
                     loginCode: '',
-                    isCheck: []
+                    isCheck: ['check']
                 },
                 rules: {
                     phone: [
@@ -88,7 +90,7 @@
                         {required: true, message: '请阅读用户协议和隐私条款', trigger: 'change'}
                     ]
                 },
-                imgUrl: process.env.VUE_APP_URL + '/captcha?type=login&t=' + Date.now()
+                imgUrl: process.env.VUE_APP_ONLINEURL + '/captcha?type=login&t=' + Date.now()
             }
         },
         methods: {
@@ -100,9 +102,8 @@
                             password: this.form.password,
                             code: this.form.loginCode
                         }).then(res => {
-                            window.console.log(res);
-                            this.$router.push({path: '/index'});
                             setToken(res.data.data.token);
+                            this.$router.push({path: '/index/chart'});
                             this.$message({
                                 message: '恭喜你，登录成功！',
                                 type: 'success'
@@ -114,7 +115,7 @@
                 });
             },
             changeImg() {
-                this.imgUrl = process.env.VUE_APP_URL + '/captcha?type=login&t=' + Date.now();
+                this.imgUrl = process.env.VUE_APP_ONLINEURL + '/captcha?type=login&t=' + Date.now();
             },
             openregister() {
                 this.$refs.register.dialogFormVisible = true;
